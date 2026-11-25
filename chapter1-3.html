@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,6 +6,10 @@
 <title>Chapter 1 - Let's Date, Senpai</title>
 
 <style>
+
+/* =========================
+   Basic Settings
+========================= */
 
 * {
     margin: 0;
@@ -18,6 +23,8 @@ body {
     color: white;
 }
 
+/* Background */
+
 .background {
     position: fixed;
     width: 100%;
@@ -29,10 +36,10 @@ body {
     background-position: center;
     background-repeat: no-repeat;
 
-    filter: none;
-
     z-index: -1;
 }
+
+/* Story Layout */
 
 .story-screen {
     width: 100%;
@@ -44,6 +51,8 @@ body {
 
     padding: 30px;
 }
+
+/* Dialogue Box */
 
 .dialogue-box {
     width: 100%;
@@ -79,6 +88,8 @@ body {
     line-height: 1.5;
 }
 
+/* Continue Button */
+
 .button-area {
     display: none;
     justify-content: flex-end;
@@ -105,7 +116,14 @@ body {
     color: black;
 }
 
-.transition-screen {
+
+/* =========================
+   Mini Game Style
+========================= */
+
+/* 游戏背景 */
+
+.game-screen {
     position: fixed;
     top: 0;
     left: 0;
@@ -113,7 +131,7 @@ body {
     width: 100%;
     height: 100vh;
 
-    background-color: #777777;
+    background-color: rgba(0, 0, 0, 0.75);
 
     display: none;
     justify-content: center;
@@ -122,58 +140,106 @@ body {
     z-index: 10;
 }
 
-.transition-content {
+/* 游戏窗口 */
+
+.game-box {
+    width: 85%;
+    max-width: 750px;
+
+    padding: 30px;
+
+    background-color: rgba(50, 50, 50, 0.95);
+
+    border: 1px solid white;
+    border-radius: 12px;
+
     text-align: center;
 }
 
-.transition-text {
-    color: white;
+.game-title {
     font-size: 30px;
-    font-weight: 500;
-    letter-spacing: 3px;
-    opacity: 0;
+    margin-bottom: 12px;
 }
 
-.transition-chinese {
-    color: #dddddd;
+.game-instruction {
     font-size: 16px;
-    margin-top: 12px;
-    letter-spacing: 2px;
-    opacity: 0;
+    color: #dddddd;
+    margin-bottom: 15px;
 }
 
-.fade-in {
-    animation: fadeIn 2s forwards;
+.score {
+    font-size: 20px;
+    margin-bottom: 15px;
 }
 
-.fade-in .transition-chinese {
-    animation: fadeIn 2s forwards;
+/* 游戏区域 */
+
+.game-area {
+    position: relative;
+
+    width: 100%;
+    height: 280px;
+
+    background-color: rgba(255, 255, 255, 0.12);
+
+    border: 1px solid #aaaaaa;
+    border-radius: 8px;
+
+    overflow: hidden;
 }
 
-.fade-out {
-    animation: fadeOut 2s forwards;
+/* 星星按钮 */
+
+.star-button {
+    position: absolute;
+
+    width: 55px;
+    height: 55px;
+
+    font-size: 35px;
+
+    background: none;
+    border: none;
+
+    cursor: pointer;
+
+    transition: 0.15s;
 }
 
-.fade-out .transition-chinese {
-    animation: fadeOut 2s forwards;
+.star-button:hover {
+    transform: scale(1.2);
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+/* 游戏完成文字 */
+
+.game-result {
+    display: none;
+
+    font-size: 20px;
+    margin-top: 20px;
+    color: white;
 }
 
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
+/* 游戏完成后的按钮 */
+
+.game-continue {
+    display: none;
+
+    margin: 15px auto 0;
+    padding: 12px 30px;
+
+    background-color: white;
+    color: black;
+
+    border: none;
+    border-radius: 6px;
+
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.game-continue:hover {
+    background-color: #dddddd;
 }
 
 </style>
@@ -181,16 +247,12 @@ body {
 
 <body>
 
-<div class="transition-screen" id="transition-screen">
-
-    <div class="transition-content">
-        <p class="transition-text" id="transition-text"></p>
-        <p class="transition-chinese" id="transition-chinese"></p>
-    </div>
-
-</div>
+<!-- Background -->
 
 <div class="background"></div>
+
+
+<!-- Story Page -->
 
 <div class="story-screen">
 
@@ -202,7 +264,6 @@ body {
 
         <p class="chinese" id="chinese"></p>
 
-        <!-- Button -->
         <div class="button-area" id="button-area">
 
             <button class="next-button"
@@ -219,13 +280,77 @@ body {
 
 </div>
 
+
+<!-- Mini Game Screen -->
+
+<div class="game-screen" id="game-screen">
+
+    <div class="game-box">
+
+        <h1 class="game-title">Encouragement from Naiwa</h1>
+
+        <p class="game-instruction">
+            点击得到鼓励
+        </p>
+
+        <!-- 显示分数 -->
+
+        <p class="score" id="score">
+            Score: 0 / 5
+        </p>
+
+        <!-- 游戏区域 -->
+
+        <div class="game-area" id="game-area">
+
+            <button class="star-button"
+            id="star-button"
+            onclick="catchStar()">
+
+                ⭐
+
+            </button>
+
+        </div>
+
+        <!-- 游戏完成提示 -->
+
+        <p class="game-result" id="game-result">
+            You have the chance to walk home from school with Naiwa!
+        </p>
+
+        <!-- 进入下一页 -->
+
+        <button class="game-continue"
+        id="game-continue"
+        onclick="goNextPage()">
+
+            Continue / 继续
+
+        </button>
+
+    </div>
+
+</div>
+
+
 <script>
 
+/* =========================
+   Story Settings
+========================= */
+
 let page = 1;
+
 let speed = 60;
 
 let englishText = "";
 let chineseText = "";
+
+
+/* =========================
+   Typing Effect
+========================= */
 
 function typeText() {
 
@@ -271,51 +396,10 @@ function typeText() {
 
 }
 
-function showTransition() {
 
-    let screen = document.getElementById("transition-screen");
-
-    let text = document.getElementById("transition-text");
-
-    let chinese = document.getElementById("transition-chinese");
-
-    document.querySelector(".story-screen").style.display = "none";
-
-    screen.style.display = "flex";
-
-    text.innerHTML = "A Few Months Later";
-    chinese.innerHTML = "几个月后";
-
-    text.className = "transition-text fade-in";
-
-    setTimeout(function() {
-
-        text.className = "transition-text fade-out";
-
-        setTimeout(function() {
-
-            text.innerHTML = "Walking Home with a Familiar Face";
-            chinese.innerHTML = "与偶遇的奶蛙一起放学";
-
-            text.className = "transition-text fade-in";
-
-            setTimeout(function() {
-
-                text.className = "transition-text fade-out";
-
-                setTimeout(function() {
-
-                    window.location.href = "chapter1-4.html";
-
-                }, 2000);
-
-            }, 2500);
-
-        }, 2000);
-
-    }, 2500);
-
-}
+/* =========================
+   Story Progress
+========================= */
 
 function nextText() {
 
@@ -332,11 +416,113 @@ function nextText() {
 
     } else if (page == 2) {
 
-        showTransition();
+        // 第二段对话结束后，进入小游戏
+        showGame();
 
     }
 
 }
+
+
+/* =========================
+   Mini Game
+========================= */
+
+// 游戏分数
+
+let score = 0;
+
+
+// 显示小游戏
+
+function showGame() {
+
+    document.querySelector(".story-screen").style.display = "none";
+
+    document.getElementById("game-screen").style.display = "flex";
+
+    moveStar();
+
+}
+
+
+// 随机移动星星
+
+function moveStar() {
+
+    let area = document.getElementById("game-area");
+
+    let star = document.getElementById("star-button");
+
+    // 计算星星可以移动的范围
+
+    let maxX = area.clientWidth - star.offsetWidth;
+    let maxY = area.clientHeight - star.offsetHeight;
+
+    // 生成随机位置
+
+    let randomX = Math.floor(Math.random() * maxX);
+    let randomY = Math.floor(Math.random() * maxY);
+
+    // 把星星移动到新位置
+
+    star.style.left = randomX + "px";
+    star.style.top = randomY + "px";
+
+}
+
+
+// 点击星星
+
+function catchStar() {
+
+    score++;
+
+    // 更新分数
+
+    document.getElementById("score").innerHTML =
+    "Score: " + score + " / 5";
+
+
+    // 检查是否达到目标
+
+    if (score >= 5) {
+
+        // 隐藏星星
+
+        document.getElementById("star-button").style.display = "none";
+
+        // 显示完成提示
+
+        document.getElementById("game-result").style.display = "block";
+
+        // 显示继续按钮
+
+        document.getElementById("game-continue").style.display = "block";
+
+    } else {
+
+        // 没有完成时，让星星换一个随机位置
+
+        moveStar();
+
+    }
+
+}
+
+
+// 进入下一页
+
+function goNextPage() {
+
+    window.location.href = "chapter1-4.html";
+
+}
+
+
+/* =========================
+   First Dialogue
+========================= */
 
 englishText = "You don't seem very happy. It's okay. Keep going, senpai!";
 
